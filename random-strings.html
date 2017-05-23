@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Random strings</title>
+	<script>
+
+		document.addEventListener('DOMContentLoaded', () => {
+			document.body.innerHTML = Array.from(Array(8)).map(() => `<p>${randomStrings(16)}</p>`).join('')
+			function randomStrings(length, source = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'){
+				return [...Array(length)].map(() => source[Math.random() * source.length | 0]).join('')
+			}
+		})
+	</script>
+</head>
+<body>
+</body>
+</html>
