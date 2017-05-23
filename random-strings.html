@@ -3,8 +3,12 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Random strings</title>
+	<style>
+		html {
+			font-family: monospace;
+		}
+	</style>
 	<script>
-
 		document.addEventListener('DOMContentLoaded', () => {
 			document.body.innerHTML = Array.from(Array(8)).map(() => `<p>${randomStrings(16)}</p>`).join('')
 			function randomStrings(length, source = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'){
