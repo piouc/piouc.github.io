@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>RegExp tester</title>
+	<style>
+		span {
+			font-weight: normal;
+			background-color: #ff8;
+			border: 1px solid #888;
+			border-radius: 0.25rem;
+			margin: -1px;
+		}
+		html {
+			width: calc(100% - 1rem);
+			height: calc(100% - 1rem);
+			margin: 0;
+			padding: 0.5rem;
+			line-height: 1.25;
+		}
+		body {
+			display: flex;
+			flex-direction: column;
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+		}
+		div {
+			flex: 1 1 0;
+			border: 1px solid #ccc;
+			border-radius: 0.25rem;
+			margin: 0.5rem;
+			padding: 1rem;
+			font-size: 1.25rem;
+			font-family: monospace;
+		}
+		div::before {
+			content: attr(data-title);
+			display: block;
+			font-family: sans-serif;
+			position: absolute;
+			background-color: #fff;
+			z-index: 1;
+			pointer-events: none;
+			margin: calc((-1rem - 0.75rem / 2)) auto 0 -0.5rem;
+			margin-right: auto;
+			padding: 0 0.5rem;
+			font-size: 0.75em;
+			line-height: 1;
+		}
+		textarea {
+			display: block;
+			flex: 1 1 0;
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			height: 100%;
+			border: none;
+			background-color: transparent;
+			font-size: inherit;
+			resize: none;
+		}
+	</style>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const src = document.getElementById('src')
+			const pattern = document.getElementById('pattern')
+			const result = document.getElementById('result')
+
+			src.addEventListener('input', update)
+			pattern.addEventListener('input', update)
+			update()
+
+			function update(){
+				let reg
+				try {
+					reg = new RegExp(pattern.value, 'g')
+				} catch(err) {
+					result.innerHTML = ''
+					result.appendChild(createTextNode(`${err.name}: ${err.message}`))
+					return
+				}
+
+				let text = src.value
+				const fragment = document.createDocumentFragment()
+				const matches = text.match(reg)
+				if(matches) {
+					let offset = 0
+					matches.forEach(match => {
+						const index = text.indexOf(match, offset)
+
+						if(index > offset){
+							fragment.appendChild(createTextNode(text.substring(offset, index)))
+						}
+
+						if(match.length > 0){
+							const span = document.createElement('span')
+							span.appendChild(createTextNode(text.substring(index, index + match.length)))
+							fragment.appendChild(span)
+						}
+
+						offset = index + match.length
+					})
+					fragment.appendChild(createTextNode(text.substring(offset, text.length)))
+				} else {
+					fragment.appendChild(createTextNode(text))
+				}
+
+				result.innerHTML = ''
+				result.appendChild(fragment)
+			}
+
+			function createTextNode(string){
+				const res = document.createDocumentFragment()
+				string.split('\n').forEach((l, i) => {
+					if(i > 0){
+						res.appendChild(document.createElement('br'))
+					}
+					res.appendChild(document.createTextNode(l))
+				})
+				return res
+			}
+		})
+	</script>
+</head>
+<body>
+	<div data-title="Test string"><textarea id="src"></textarea></div>
+	<div data-title="RegExp pattern"><textarea id="pattern"></textarea></div>
+	<div id="result" data-title="Result"></div>
+</body>
+</html>
