@@ -2,20 +2,13 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>RegExp tester</title>
+	<title>RegExp Tester</title>
 	<style>
-		span {
-			font-weight: normal;
-			background-color: #ff8;
-			border: 1px solid #888;
-			border-radius: 0.25rem;
-			margin: -1px;
-		}
 		html {
-			width: calc(100% - 1rem);
-			height: calc(100% - 1rem);
+			width: calc(100% - 2rem);
+			height: calc(100% - 2rem);
 			margin: 0;
-			padding: 0.5rem;
+			padding: 1rem;
 			line-height: 1.25;
 		}
 		body {
@@ -25,29 +18,56 @@
 			height: 100%;
 			margin: 0;
 			padding: 0;
+			overflow: hidden;
 		}
-		div {
+		.container {
 			flex: 1 1 0;
-			border: 1px solid #ccc;
+			border: 1px solid #c0c0c0;
 			border-radius: 0.25rem;
-			margin: 0.5rem;
+			margin: 1rem;
 			padding: 1rem;
 			font-size: 1.25rem;
 			font-family: monospace;
+			align-items: stretch;
+			overflow-y: hidden;
 		}
-		div::before {
-			content: attr(data-title);
-			display: block;
+		header {
 			font-family: sans-serif;
 			position: absolute;
-			background-color: #fff;
 			z-index: 1;
-			pointer-events: none;
 			margin: calc((-1rem - 0.75rem / 2)) auto 0 -0.5rem;
-			margin-right: auto;
-			padding: 0 0.5rem;
-			font-size: 0.75em;
+			padding: 0;
+			font-size: 0.75rem;
 			line-height: 1;
+			display: flex;
+		}
+		h2, #flags, #error {
+			color: #808080;
+			font-size: inherit;
+			padding: 0 0.5rem;
+			margin: 0 1.5rem 0 0;
+			background-color: #fff;
+		}
+		#flags {
+			display: flex;
+		}
+		#error:empty {
+			padding: 0;
+		}
+		input[type="checkbox"] {
+			margin: -0.5em 0.25rem -0.5em 0;
+			padding: 0;
+		}
+		label {
+			margin-right: 1rem;
+			vertical-align: middle;
+			-ms-user-select: none;
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			user-select: none;
+		}
+		label:last-child {
+			margin-right: 0;
 		}
 		textarea {
 			display: block;
@@ -61,57 +81,103 @@
 			font-size: inherit;
 			resize: none;
 		}
+		textarea, #result {
+			height: 100%;
+			overflow-y: scroll;
+		}
+		span {
+			font-weight: normal;
+			background-color: #ff8;
+			border: 1px solid #888;
+			border-radius: 0.25rem;
+			margin: -1px;
+		}
+		h1 {
+			display: none;
+		}
 	</style>
 	<script>
 		document.addEventListener('DOMContentLoaded', () => {
 			const src = document.getElementById('src')
 			const pattern = document.getElementById('pattern')
+			const gFlag = document.getElementById('g-flag')
+			const iFlag = document.getElementById('i-flag')
+			const mFlag = document.getElementById('m-flag')
 			const result = document.getElementById('result')
+			const error = document.getElementById('error')
 
 			src.addEventListener('input', update)
 			pattern.addEventListener('input', update)
+			gFlag.addEventListener('change', update)
+			iFlag.addEventListener('change', update)
+			mFlag.addEventListener('change', update)
 			update()
 
 			function update(){
+				console.time('update')
+
+				result.innerHTML = ''
+				error.innerHTML = ''
+
+				const text = src.value
 				let reg
 				try {
-					reg = new RegExp(pattern.value, 'g')
+					reg = new RegExp(pattern.value, frag({
+						g: gFlag.checked,
+						i: iFlag.checked,
+						m: mFlag.checked
+					}))
 				} catch(err) {
-					result.innerHTML = ''
-					result.appendChild(createTextNode(`${err.name}: ${err.message}`))
+					result.appendChild(createBreakedTextNodes(text))
+					error.appendChild(createBreakedTextNodes(`${err.name}: ${err.message}`))
+					console.timeEnd('update')
 					return
 				}
 
-				let text = src.value
 				const fragment = document.createDocumentFragment()
-				const matches = text.match(reg)
-				if(matches) {
-					let offset = 0
-					matches.forEach(match => {
-						const index = text.indexOf(match, offset)
+				let offset = 0
+				execAll(reg, text).forEach(res => {
+					if(res.index > offset){
+						fragment.appendChild(createBreakedTextNodes(text.substring(offset, res.index)))
+					}
+					if(res[0].length > 0){
+						const span = document.createElement('span')
+						span.appendChild(createBreakedTextNodes(res[0]))
+						fragment.appendChild(span)
+					}
+					offset = res.index + res[0].length
+				})
+				fragment.appendChild(createBreakedTextNodes(text.substring(offset, text.length)))
 
-						if(index > offset){
-							fragment.appendChild(createTextNode(text.substring(offset, index)))
-						}
-
-						if(match.length > 0){
-							const span = document.createElement('span')
-							span.appendChild(createTextNode(text.substring(index, index + match.length)))
-							fragment.appendChild(span)
-						}
-
-						offset = index + match.length
-					})
-					fragment.appendChild(createTextNode(text.substring(offset, text.length)))
-				} else {
-					fragment.appendChild(createTextNode(text))
-				}
-
-				result.innerHTML = ''
 				result.appendChild(fragment)
+				console.timeEnd('update')
 			}
 
-			function createTextNode(string){
+			function execAll(reg, string){
+				const re = RegExp(reg)
+				const res = []
+				let r, lastIndex
+				if(re.global){
+					while(r = re.exec(string)){
+						if(lastIndex === re.lastIndex){
+							re.lastIndex++
+							continue
+						}
+						res.push(r)
+						lastIndex = re.lastIndex
+					}
+				} else {
+					r = re.exec(string)
+					if(r) res.push(r)
+				}
+				return res
+			}
+
+			function frag(obj){
+				return Object.keys(obj).map(key => obj[key] ? key : '').join('')
+			}
+
+			function createBreakedTextNodes(string){
 				const res = document.createDocumentFragment()
 				string.split('\n').forEach((l, i) => {
 					if(i > 0){
@@ -125,8 +191,30 @@
 	</script>
 </head>
 <body>
-	<div data-title="Test string"><textarea id="src"></textarea></div>
-	<div data-title="RegExp pattern"><textarea id="pattern"></textarea></div>
-	<div id="result" data-title="Result"></div>
+	<h1>RegExp Tester</h1>
+	<div class="container">
+		<header>
+			<h2>Test string</h2>
+		</header>
+		<textarea id="src" tabindex="1" autofocus></textarea>
+		</div>
+	<div class="container">
+		<header>
+			<h2>RegExp pattern</h2>
+			<div id="flags">
+				<label><input type="checkbox" id="g-flag">g (global match)</label>
+				<label><input type="checkbox" id="i-flag">i (ignore case)</label>
+				<label><input type="checkbox" id="m-flag">m (multiline)</label>
+			</div>
+		</header>
+		<textarea id="pattern" tabindex="2"></textarea>
+	</div>
+	<div class="container">
+		<header>
+			<h2>Result</h2>
+			<div id="error"></div>
+		</header>
+		<div id="result"></div>
+	</div>
 </body>
 </html>
