@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Live Counter</title>
+	<meta name="viewport" content="initial-scale=1.0">
+	<style>
+		html, body {
+			width: 100vw;
+			height: 100vh;
+			padding: 0;
+			margin: 0;
+		}
+
+		html {
+			font-family: sans-serif;
+		}
+
+		body {
+			display: flex;
+			flex-direction: column;
+		}
+
+		textarea {
+			width: 100vw;
+			flex: 1 1 auto;
+			padding: 2rem 2rem 0.5rem 2rem;
+			margin: 0;
+			border: 0 none;
+			display: block;
+			font-size: 1rem;
+			line-height: 1.75;
+			background-color: transparent;
+			box-sizing: border-box;
+			resize: none;
+		}
+
+		ul {
+			flex: 0 0 auto;
+			width: 100vw;
+			padding: 0.75rem 2rem;
+			margin: 0;
+			display: flex;
+			bottom: 0;
+			box-sizing: border-box;
+		}
+
+		li {
+			list-style-type: none;
+			flex: 1 1 100%;
+			text-align: center;
+		}
+
+		@media screen and (max-width: 600px) {
+			li {
+				font-size: 0.75rem;
+			}
+		}
+
+		p {
+			margin: 0;
+			padding: 0;
+		}
+
+		.label {
+			font-size: 0.75em;
+		}
+
+		.value {
+			font-size: 1em;
+			margin-bottom: 0.25rem;
+		}
+	</style>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const localStorage = window.localStorage
+
+			const textarea = document.createElement('textarea')
+			document.body.appendChild(textarea)
+
+			const statusBar = document.createElement('ul')
+			document.body.appendChild(statusBar)
+
+			function removeAllChild(element){
+				Array.from(element.childNodes).forEach(child => element.removeChild(child))
+			}
+
+			function createLabelUpdator(str, fn){
+				const li = document.createElement('li')
+				statusBar.appendChild(li)
+
+				const value = document.createElement('p')
+				value.setAttribute('class', 'value')
+				li.appendChild(value)
+
+				const label = document.createElement('p')
+				label.setAttribute('class', 'label')
+				label.appendChild(document.createTextNode(str))
+				li.appendChild(label)
+
+				return (str) => {
+					removeAllChild(value)
+					value.appendChild(document.createTextNode(fn(str).toLocaleString('en-US')))
+				}
+			}
+
+			const throttle = (fn, delay) => {
+				let next = null
+				let timer = null
+				return (...args) => {
+					if(next < Date.now()){
+						next = Date.now() + delay
+						fn(...args)
+					} else if(!timer) {
+						setTimeout(() => {
+							fn(...args)
+							next = Date.now() + delay
+							timer = null
+						}, next - Date.now())
+					}
+				}
+			}
+
+			const statusLabels = [
+				createLabelUpdator('すべて', str => str.length),
+				createLabelUpdator('アルファベット', str => str.length - str.replace(/[a-zA-Z\uff41-\uff5a\uff21-\uff3a]+/g, '').length),
+				createLabelUpdator('数字', str => str.length - str.replace(/[0-9\uff10-\uff19]+/g, '').length),
+				createLabelUpdator('ひらがな', str => str.length - str.replace(/[\u3041-\u3096]+/g, '').length),
+				createLabelUpdator('カタカナ', str => str.length - str.replace(/[\u30A1-\u30F6\uFF61-\uFF9F]+/g, '').length),
+				createLabelUpdator('漢字', str => str.length - str.replace(/[\u2E80-\u2E99\u2E9B-\u2EF3\u2F00-\u2FD5\u3005\u3007\u3021-\u3029\u3038-\u303B\u3400-\u4DB5\u4E00-\u9FCC\uF900-\uFA6D\uFA70-\uFAD9]|[\uD840-\uD868][\uDC00-\uDFFF]|\uD869[\uDC00-\uDED6\uDF00-\uDFFF]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD86D[\uDC00-\uDF34\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1D]|\uD87E[\uDC00-\uDE1D]+/g, '').length),
+				createLabelUpdator('改行', str => str.length - str.replace(/[\f\n\r]+/g, '').length),
+				createLabelUpdator('その他', str => str.replace(/[a-zA-Z\uFF41-\uFF5A\uFF21-\uFF3A0-9\uFF10-\uFF19\u3041-\u3096\u30A1-\u30F6\uFF61-\uFF9F\f\n\r]|[\u2E80-\u2E99\u2E9B-\u2EF3\u2F00-\u2FD5\u3005\u3007\u3021-\u3029\u3038-\u303B\u3400-\u4DB5\u4E00-\u9FCC\uF900-\uFA6D\uFA70-\uFAD9]|[\uD840-\uD868][\uDC00-\uDFFF]|\uD869[\uDC00-\uDED6\uDF00-\uDFFF]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD86D[\uDC00-\uDF34\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1D]|\uD87E[\uDC00-\uDE1D]+/g, '').length)
+			]
+
+			const update = () => {
+				const text = textarea.value
+				statusLabels.forEach(u => u(textarea.value))
+				localStorage.setItem('text', text)
+			}
+
+			textarea.focus()
+			textarea.value = localStorage.getItem('text')
+
+			textarea.addEventListener('input', throttle(update, 250))
+			update()
+		})
+	</script>
+</head>
+<body>
+</body>
+</html>
