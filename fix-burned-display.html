@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Fix burned display</title>
+	<script>
+		const handler = e => {
+			if(e.type === 'click' || e.key === 'Enter'){
+				if(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement){
+					(document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen).call(document)
+				} else {
+					(Element.prototype.requestFullscreen || Element.prototype.webkitRequestFullScreen || Element.prototype.mozRequestFullScreen || Element.prototype.msRequestFullScreen).call(document.documentElement)
+				}
+			}
+		}
+		document.addEventListener('keydown', handler)
+		document.addEventListener('click', handler)
+
+		document.addEventListener('DOMContentLoaded', () => {
+			let count = 0
+			function render(){
+				if(count === 0){
+					document.documentElement.style.backgroundColor = '#f00'
+					count += 1
+				} else if(count === 1){
+					document.documentElement.style.backgroundColor = '#0f0'
+					count += 1
+				} else {
+					document.documentElement.style.backgroundColor = '#00f'
+					count = 0
+				}
+				window.requestAnimationFrame(render)
+			}
+			render()
+		})
+	</script>
+	<style>
+		:root {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 100vw;
+			height: 100vh;
+			cursor: none;
+		}
+		:root::after {
+			content: 'Press Enter or click to fullscreen';
+			display: block;
+			color: rgba(255, 255, 255, 0.25);
+			font-size: 2rem;
+			font-weight: bold;
+			font-family: sans-serif;
+		}
+		:root:fullscreen::after {
+			content: '';
+		}
+		:root:-webkit-full-screen::after {
+			content: '';
+		}
+		:root:-moz-full-screen::after {
+			content: '';
+		}
+		:root:-ms-full-screen::after {
+			content: '';
+		}
+	</style>
+</head>
+<body>
+	
+</body>
+</html>
