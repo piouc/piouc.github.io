@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Remove Duplicates</title>
+	<style>
+		
+		html {
+			width: calc(100% - 2rem);
+			height: calc(100% - 2rem);
+			margin: 0;
+			padding: 1rem;
+			line-height: 1;
+		}
+		body {
+			display: flex;
+			flex-direction: row;
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+		}
+		.container {
+			flex: 1 1 0;
+			border: 1px solid #c0c0c0;
+			border-radius: 0.25rem;
+			margin: 1rem;
+			padding: 1rem;
+			font-size: 1.25rem;
+			font-family: monospace;
+			align-items: stretch;
+			overflow-y: hidden;
+		}
+		header {
+			font-family: sans-serif;
+			position: absolute;
+			z-index: 1;
+			margin: calc((-1rem - 0.75rem / 2)) auto 0 -0.5rem;
+			padding: 0;
+			font-size: 0.75rem;
+			line-height: 1;
+			display: flex;
+		}
+		h2, #info {
+			color: #808080;
+			font-size: inherit;
+			padding: 0 0.5rem;
+			margin: 0 1.5rem 0 0;
+			background-color: #fff;
+		}
+		#flags {
+			display: flex;
+		}
+		#info:empty {
+			padding: 0;
+		}
+		textarea {
+			display: block;
+			flex: 1 1 0;
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			height: 100%;
+			border: none;
+			background-color: transparent;
+			font-size: inherit;
+			resize: none;
+		}
+		textarea, #result {
+			height: 100%;
+			overflow-y: scroll;
+			padding: 0.5rem;
+			margin: -0.5rem;
+			line-height: 1.25;
+		}
+		h1 {
+			display: none;
+		}
+	</style>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const src = document.getElementById('src')
+			const result = document.getElementById('result')
+			const info = document.getElementById('info')
+
+			src.addEventListener('input', update)
+			update()
+
+			function update(){
+				result.innerHTML = ''
+				info.innerHTML = ''
+
+				const original = src.value
+				const removed = Array.from(new Set(original.split('\n'))).join('\n')
+
+				result.appendChild(document.createTextNode(removed))
+				info.appendChild(document.createTextNode(`${lines(original)} original lines, ${lines(original) - lines(removed)} removed, ${lines(removed)} remaining.`))
+			}
+			function lines(str){
+				return str.split('\n').length
+			}
+		})
+	</script>
+</head>
+<body>
+	<h1>Remove Duplicates</h1>
+	<div class="container">
+		<header>
+			<h2>Input</h2>
+		</header>
+		<textarea id="src" tabindex="1" autofocus></textarea>
+	</div>
+	<div class="container">
+		<header>
+			<h2>Removed</h2>
+			<div id="info"></div>
+		</header>
+		<textarea id="result" readonly></textarea>
+	</div>
+</body>
+</html>
