@@ -41,11 +41,12 @@
 			display: flex;
 		}
 		h2, #flags, #error {
-			color: #808080;
+			color: #404040;
 			font-size: inherit;
 			padding: 0 0.5rem;
 			margin: 0 1.5rem 0 0;
 			background-color: #fff;
+			white-space: nowrap;
 		}
 		#flags {
 			display: flex;
@@ -67,6 +68,16 @@
 		}
 		label:last-child {
 			margin-right: 0;
+		}
+		small {
+			margin-left: 0.25rem;
+			font-size: inherit;
+			color: #c0c0c0;
+		}
+		@media(max-width: 50rem){
+			small {
+				display: none;
+			}
 		}
 		textarea {
 			display: block;
@@ -102,17 +113,20 @@
 		document.addEventListener('DOMContentLoaded', () => {
 			const src = document.getElementById('src')
 			const pattern = document.getElementById('pattern')
-			const gFlag = document.getElementById('g-flag')
-			const iFlag = document.getElementById('i-flag')
-			const mFlag = document.getElementById('m-flag')
+			const flagG = document.getElementById('flag-g')
+			const flagI = document.getElementById('flag-i')
+			const flagM = document.getElementById('flag-m')
+			const flagS = document.getElementById('flag-s')
+			const flagU = document.getElementById('flag-u')
+			const flagY = document.getElementById('flag-y')
 			const result = document.getElementById('result')
 			const error = document.getElementById('error')
 
 			src.addEventListener('input', update)
 			pattern.addEventListener('input', update)
-			gFlag.addEventListener('change', update)
-			iFlag.addEventListener('change', update)
-			mFlag.addEventListener('change', update)
+			flagG.addEventListener('change', update)
+			flagI.addEventListener('change', update)
+			flagM.addEventListener('change', update)
 			update()
 
 			function update(){
@@ -124,9 +138,12 @@
 				let reg
 				try {
 					reg = new RegExp(pattern.value, flag({
-						g: gFlag.checked,
-						i: iFlag.checked,
-						m: mFlag.checked
+						g: flagG.checked,
+						i: flagI.checked,
+						m: flagM.checked,
+						s: flagS.checked,
+						u: flagU.checked,
+						y: flagY.checked
 					}))
 				} catch(err) {
 					result.appendChild(createBreakedTextNodes(text))
@@ -201,9 +218,12 @@
 		<header>
 			<h2>RegExp pattern</h2>
 			<div id="flags">
-				<label><input type="checkbox" id="g-flag">g (global match)</label>
-				<label><input type="checkbox" id="i-flag">i (ignore case)</label>
-				<label><input type="checkbox" id="m-flag">m (multiline)</label>
+				<label><input type="checkbox" id="flag-g">g<small>(global match)</small></label>
+				<label><input type="checkbox" id="flag-i">i<small>(ignore case)</small></label>
+				<label><input type="checkbox" id="flag-m">m<small>(multiline)</small></label>
+				<label><input type="checkbox" id="flag-s">s<small>(dot all)</small></label>
+				<label><input type="checkbox" id="flag-u">u<small>(unicode)</small></label>
+				<label><input type="checkbox" id="flag-y">y<small>(sticky)</small></label>
 			</div>
 		</header>
 		<textarea id="pattern" tabindex="2"></textarea>
