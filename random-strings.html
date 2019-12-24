@@ -10,10 +10,21 @@
 	</style>
 	<script>
 		document.addEventListener('DOMContentLoaded', () => {
-			document.body.innerHTML = Array.from(Array(8)).map(() => `<p>${randomStrings(16)}</p>`).join('')
+			const asciiCharacters = Array.from(Array(93), (v, i) => String.fromCharCode(33 + i)).join('')
+			document.body.innerHTML = [
+				Array.from(Array(8), () => randomStrings(16)),
+				Array.from(Array(8), () => randomStrings(24)),
+				Array.from(Array(8), () => randomStrings(16, asciiCharacters)),
+				Array.from(Array(8), () => randomStrings(24, asciiCharacters))
+			].flat().map(v => `<p>${escape(v)}</p>`).join('')
 			function randomStrings(length, source = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'){
 				return [...Array(length)].map(() => source[Math.random() * source.length | 0]).join('')
 			}
+			function escape(str){
+				return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+			}
+
+
 		})
 	</script>
 </head>
