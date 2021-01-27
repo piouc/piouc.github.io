@@ -164,16 +164,19 @@
   padding: 1.25rem 1.75rem;
   box-sizing: border-box;
   opacity: 0;
-  transition: all 0.6s;
+  transition: all 0.5s, backdrop-filter 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   ${at}:hover & {
     opacity: 1;
-    backdrop-filter: blur(1rem);
+    backdrop-filter: blur(0.25rem);
   }
 `,it=Oe.div`
   font-size: 0.8125rem;
   display: flex;
   flex-direction: column;
-  filter: blur(0.25rem);
+  filter: blur(0.175rem);
   &::after {
     content: '';
     margin: 0.5rem 0;
@@ -187,17 +190,21 @@
   }
 `,ut=Oe.div`
   font-size: 0.75rem;
-  filter: blur(0.25rem);
+  filter: blur(0.175rem);
   ${at}:hover & {
     filter: none;
   }
 `,st=({name:t,type:n,imageName:r})=>e.createElement(at,null,e.createElement(lt,null,e.createElement(rt,{name:r,width:"1200",height:"849"})),e.createElement(ot,null,e.createElement(it,null,t),e.createElement(ut,null,n))),ct=Oe.div`
-  display: flex;
-  flex-wrap: wrap;
-  margin: -0.3125rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.625rem;
+  @media (max-width: 100rem) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: 50rem) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `,ft=Oe.div`
-  flex: 1 1 calc(100% / 3);
-  margin: 0.3125rem;
 `,dt=()=>e.createElement(ct,null,e.createElement(ft,null,e.createElement(st,{name:"Youga X'mas Market 2020",type:"CI & VI / Graphic / Web",imageName:"0001.jpg"})),e.createElement(ft,null,e.createElement(st,{name:"Youga X'mas Market 2020",type:"CI & VI / Graphic / Web",imageName:"0002.jpg"})),e.createElement(ft,null,e.createElement(st,{name:"Youga X'mas Market 2020",type:"CI & VI / Graphic / Web",imageName:"0003.jpg"})),e.createElement(ft,null,e.createElement(st,{name:"Youga X'mas Market 2020",type:"CI & VI / Graphic / Web",imageName:"0004.jpg"})),e.createElement(ft,null,e.createElement(st,{name:"Youga X'mas Market 2020",type:"CI & VI / Graphic / Web",imageName:"0005.jpg"})),e.createElement(ft,null,e.createElement(st,{name:"Youga X'mas Market 2020",type:"CI & VI / Graphic / Web",imageName:"0006.jpg"})),e.createElement(ft,null,e.createElement(st,{name:"Youga X'mas Market 2020",type:"CI & VI / Graphic / Web",imageName:"0007.jpg"})),e.createElement(ft,null,e.createElement(st,{name:"Youga X'mas Market 2020",type:"CI & VI / Graphic / Web",imageName:"0008.jpg"})),e.createElement(ft,null,e.createElement(st,{name:"Youga X'mas Market 2020",type:"CI & VI / Graphic / Web",imageName:"0009.jpg"})),e.createElement(ft,null,e.createElement(st,{name:"Youga X'mas Market 2020",type:"CI & VI / Graphic / Web",imageName:"0010.jpg"})),e.createElement(ft,null,e.createElement(st,{name:"Youga X'mas Market 2020",type:"CI & VI / Graphic / Web",imageName:"0011.jpg"})),e.createElement(ft,null,e.createElement(st,{name:"Youga X'mas Market 2020",type:"CI & VI / Graphic / Web",imageName:"0012.jpg"})),e.createElement(ft,null,e.createElement(st,{name:"Youga X'mas Market 2020",type:"CI & VI / Graphic / Web",imageName:"0013.jpg"})),e.createElement(ft,null,e.createElement(st,{name:"Youga X'mas Market 2020",type:"CI & VI / Graphic / Web",imageName:"0014.jpg"})),e.createElement(ft,null,e.createElement(st,{name:"Youga X'mas Market 2020",type:"CI & VI / Graphic / Web",imageName:"0015.jpg"})),e.createElement(ft,null,e.createElement(st,{name:"Youga X'mas Market 2020",type:"CI & VI / Graphic / Web",imageName:"0016.jpg"}))),pt=function(t){return e.createElement("svg",Object.assign({"data-name":"\\u30EC\\u30A4\\u30E4\\u30FC 1",xmlns:"http://www.w3.org/2000/svg",viewBox:"0 0 156.711 31.804"},t),e.createElement("path",{fill:"none",stroke:"currentcolor",strokeMiterlimit:10,strokeWidth:2,d:"M156.354.934l-77.999 29.8L.357.934"}))},ht=Oe.div`
   display: flex;
   flex-direction: column;
@@ -205,6 +212,7 @@
   margin-bottom: 1.625rem;
 `,gt=Oe.div`
   align-self: center;
+  margin: 1rem 0;
 `,vt=Oe.div`
   align-self: center;
   margin: 3.125rem 0;
