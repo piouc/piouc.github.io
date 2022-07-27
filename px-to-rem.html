@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script>
+    const base = 16
+    document.addEventListener('DOMContentLoaded', () => {
+      const html = Array.from(Array(128), ((v, i) => i)).map(num => {
+        return `
+          <div data-value="${num}">
+            <span>${num}</span><small> / ${base} = ${num/base}</small>
+          </div>
+        `
+      }).join('\n')
+      document.body.innerHTML = html
+      document.querySelectorAll('div').forEach(el => {
+        const num = Number(el.dataset.value)
+        el.addEventListener('click', () => {
+          navigator.clipboard.writeText(`${num/base}rem`)
+        })
+      })
+    })
+  </script>
+  <style>
+    :root {
+      font-family: monospace;
+    }
+    body {
+      padding: 1rem;
+      display: grid;
+      grid-auto-flow: column;
+      grid-template-rows: repeat(16, 1fr);
+      width: min-content;
+      gap: 0 2rem;
+    }
+    div {
+      margin: 0;
+      padding: 0.5rem 1rem;
+      font-size: 1.25rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    div:hover {
+      border-color: #ccc;
+      border-radius: 0.25rem;
+    }
+    div:active {
+      background-color: #eee;
+    }
+    small {
+      font-size: 0.75em;
+    }
+    span {
+      display: inline-block;
+      width: 2.5rem;
+      text-align: right;
+      font-size: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  
+</body>
+</html>
