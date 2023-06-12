@@ -10,25 +10,38 @@
     document.addEventListener('DOMContentLoaded', () => {
       const html = Array.from(Array(128), ((v, i) => i)).map(num => {
         return `
-          <div data-value="${num}">
+          <div class="item" data-value="${num}">
             <span>${num}</span><small> / ${base} = ${num/base}</small>
           </div>
         `
       }).join('\n')
-      document.body.innerHTML = html
-      document.querySelectorAll('div').forEach(el => {
-        const num = Number(el.dataset.value)
+      document.getElementById('root').innerHTML = html
+      document.querySelectorAll('.item').forEach(el => {
         el.addEventListener('click', () => {
+          const num = Number(el.dataset.value)
           navigator.clipboard.writeText(`${num/base}rem`)
         })
       })
+
+      const userInputItem = document.getElementById('user-input-item')
+      const userInputInput = document.getElementById('user-input-input')
+      const handleInput = () => {
+        const num = userInputInput.value || 0
+        userInputItem.setAttribute('data-value', num)
+        userInputItem.innerHTML = `
+          <small> / ${base} = ${num/base}</small>
+        `
+      }
+      userInputInput.addEventListener('focus', e => e.target.select())
+      userInputInput.addEventListener('input', handleInput)
+      handleInput()
     })
   </script>
   <style>
     :root {
       font-family: monospace;
     }
-    body {
+    #root {
       padding: 1rem;
       display: grid;
       grid-auto-flow: column;
@@ -36,7 +49,7 @@
       width: min-content;
       gap: 0 2rem;
     }
-    div {
+    .item {
       margin: 0;
       padding: 0.5rem 1rem;
       font-size: 1.25rem;
@@ -44,11 +57,11 @@
       cursor: pointer;
       white-space: nowrap;
     }
-    div:hover {
+    .item:hover {
       border-color: #ccc;
       border-radius: 0.25rem;
     }
-    div:active {
+    .item:active {
       background-color: #eee;
     }
     small {
@@ -60,9 +73,28 @@
       text-align: right;
       font-size: 1.5rem;
     }
+    #user-input-item-container {
+      display: flex;
+      padding: 1rem;
+    }
+    #user-input-item-container span {
+      width: auto;
+    }
+    input {
+      display: inline-block;
+      min-width: 5rem;
+      text-align: right;
+      font-size: 1.5rem;
+      border: none;
+    }
   </style>
 </head>
 <body>
+  <div id="root"></div>
   
+  <div id="user-input-item-container">
+    <input type="text" id="user-input-input" value="0" size="1">
+    <div id="user-input-item" class="item" data-value="0"></div>
+  </div>
 </body>
 </html>
