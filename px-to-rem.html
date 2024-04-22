@@ -16,25 +16,85 @@
         `
       }).join('\n')
       document.getElementById('root').innerHTML = html
+
+      const copy = (value) => {
+        navigator.clipboard.writeText(value)
+      }
+      const copyRem = (el) => {
+        const num = Number(el.dataset.value)
+        copy(`${num/base}rem`)
+      }
       document.querySelectorAll('.item').forEach(el => {
         el.addEventListener('click', () => {
-          const num = Number(el.dataset.value)
-          navigator.clipboard.writeText(`${num/base}rem`)
+          copyRem(el)
         })
       })
 
       const userInputItem = document.getElementById('user-input-item')
       const userInputInput = document.getElementById('user-input-input')
-      const handleInput = () => {
+      const handleUserInput = () => {
         const num = userInputInput.value || 0
         userInputItem.setAttribute('data-value', num)
-        userInputItem.innerHTML = `
-          <small> / ${base} = ${num/base}</small>
-        `
+        userInputItem.innerHTML = `<small> / ${base} = ${num/base}</small>`
       }
       userInputInput.addEventListener('focus', e => e.target.select())
-      userInputInput.addEventListener('input', handleInput)
-      handleInput()
+      userInputInput.addEventListener('input', handleUserInput)
+      userInputInput.addEventListener('keydown', e => {
+        if(e.key === 'Enter'){
+          copyRem(userInputItem)
+        }
+      })
+      handleUserInput()
+      
+
+      const lineHeightInput = document.getElementById('line-height-input')
+      const fontSizeInput = document.getElementById('font-size-input')
+      const lineHeightItem = document.getElementById('line-height-item')
+
+      const handleLineHeightInput = () => {
+        const lineHeight = lineHeightInput.value || 16
+        const fontSize = fontSizeInput.value || 16
+        lineHeightItem.innerHTML = `<small> = ${lineHeight / fontSize}</small>`
+      }
+      const handleLineHeightCopy = () => {
+        const lineHeight = lineHeightInput.value || 16
+        const fontSize = fontSizeInput.value || 16
+        copy(lineHeight / fontSize)
+      }
+      lineHeightInput.addEventListener('focus', e => e.target.select())
+      fontSizeInput.addEventListener('focus', e => e.target.select())
+      lineHeightInput.addEventListener('input', handleLineHeightInput)
+      fontSizeInput.addEventListener('input', handleLineHeightInput)
+      lineHeightItem.addEventListener('click', handleLineHeightCopy)
+      userInputInput.addEventListener('keydown', e => {
+        if(e.key === 'Enter'){
+          handleLineHeightCopy()
+        }
+      })
+      handleLineHeightInput()
+
+
+      const transparencyItem = document.getElementById('transparency-item')
+      const transparencyInput = document.getElementById('transparency-input')
+      const percentageToHex = (num) => {
+        return Math.round(2.55 * Number.parseInt(num)).toString(16).padStart(2, '0')
+      }
+      const handleTransparencyInput = () => {
+        const num = transparencyInput.value || 0
+        transparencyItem.innerHTML = `<small> = ${percentageToHex(num)}</small>`
+      }
+      const handleTransparencyCopy = () => {
+        copy(percentageToHex(transparencyInput.value || 0))
+      }
+      transparencyInput.addEventListener('focus', e => e.target.select())
+      transparencyInput.addEventListener('input', handleTransparencyInput)
+      transparencyItem.addEventListener('click', handleTransparencyCopy)
+      transparencyInput.addEventListener('keydown', e => {
+        if(e.key === 'Enter'){
+          handleLineHeightCopy
+        }
+      })
+      handleTransparencyInput()
     })
   </script>
   <style>
@@ -49,7 +109,8 @@
       width: min-content;
       gap: 0 2rem;
     }
-    .item {
+    .item,
+    .line-height-item {
       margin: 0;
       padding: 0.5rem 1rem;
       font-size: 1.25rem;
@@ -57,7 +118,8 @@
       cursor: pointer;
       white-space: nowrap;
     }
-    .item:hover {
+    .item:hover,
+    .line-height-item:hover {
       border-color: #ccc;
       border-radius: 0.25rem;
     }
@@ -73,7 +135,9 @@
       text-align: right;
       font-size: 1.5rem;
     }
-    #user-input-item-container {
+    #user-input-item-container,
+    #line-height-container,
+    #transparency-container {
       display: flex;
       padding: 1rem;
     }
@@ -95,6 +159,16 @@
   <div id="user-input-item-container">
     <input type="text" id="user-input-input" value="0" size="1">
     <div id="user-input-item" class="item" data-value="0"></div>
+  </div>
+  <div id="line-height-container">
+    <input type="text" id="line-height-input" value="16" size="1">
+    <div class="line-height-item" style="pointer-events: none;">/</div>
+    <input type="text" id="font-size-input" value="16" size="1" style="text-align: left;">
+    <div id="line-height-item" class="line-height-item"></div>
+  </div>
+  <div id="transparency-container">
+    <input type="text" id="transparency-input" value="100" size="1">
+    <div id="transparency-item" class="item" data-value="0"></div>
   </div>
 </body>
 </html>
