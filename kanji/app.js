@@ -232,6 +232,8 @@
     canvas.addEventListener("pointerup", endStroke);
     canvas.addEventListener("pointercancel", endStroke);
     canvas.addEventListener("contextmenu", e => e.preventDefault());
+    canvas.addEventListener("touchstart", e => e.preventDefault(), { passive: false });
+    canvas.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
 
     let resizeTimer = null;
     window.addEventListener("resize", () => {
@@ -327,6 +329,8 @@
     });
 
     btn.addEventListener("contextmenu", e => e.preventDefault());
+    btn.addEventListener("touchstart", e => e.preventDefault(), { passive: false });
+    btn.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
 
     return { reset };
   };
