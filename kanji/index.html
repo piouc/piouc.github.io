@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>漢字書き取り練習</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="app">
+
+  <section id="screen-setup">
+    <h1 class="app-title">漢字書き取り練習</h1>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>出題範囲</h2>
+        <div class="level-actions">
+          <button id="btn-select-all" class="btn small">全選択</button>
+          <button id="btn-select-none" class="btn small">全解除</button>
+        </div>
+      </div>
+      <div id="level-list" class="level-list"></div>
+    </div>
+
+    <div class="card">
+      <h2>出題数</h2>
+      <div id="count-options" class="count-options">
+        <label class="count-option"><input type="radio" name="count" value="10"><span>10問</span></label>
+        <label class="count-option"><input type="radio" name="count" value="20"><span>20問</span></label>
+        <label class="count-option"><input type="radio" name="count" value="50"><span>50問</span></label>
+      </div>
+    </div>
+
+    <div class="setup-buttons">
+      <button id="btn-start" class="btn primary big">練習を始める</button>
+      <button id="btn-review" class="btn accent big">間違いを復習(<span id="mistake-count">0</span>問)</button>
+      <button id="btn-stats" class="btn big">成績を見る</button>
+    </div>
+  </section>
+
+  <section id="screen-practice" hidden>
+    <header class="practice-header">
+      <button id="btn-quit" class="btn small">← やめる</button>
+      <div id="progress" class="progress">1 / 10</div>
+      <div id="mode-badge" class="badge" hidden>復習</div>
+    </header>
+
+    <div id="sentence" class="sentence"></div>
+
+    <div class="pad-wrap">
+      <div id="pad-container" class="pad-container">
+        <svg class="pad-guide" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="50" y1="3" x2="50" y2="97"></line>
+          <line x1="3" y1="50" x2="97" y2="50"></line>
+        </svg>
+        <canvas id="pad"></canvas>
+        <div id="answer-overlay" class="answer-overlay" hidden></div>
+        <div id="judge-mark" class="judge-mark" hidden></div>
+      </div>
+    </div>
+
+    <div class="practice-controls">
+      <button id="btn-undo" class="btn">一画戻す</button>
+      <button id="btn-clear" class="btn">クリア</button>
+    </div>
+
+    <div class="grade-area">
+      <span id="hint-wrong" class="drag-hint left">← ✕</span>
+      <button id="btn-check" class="btn primary check-btn">答え合わせ</button>
+      <span id="hint-correct" class="drag-hint right">◯ →</span>
+    </div>
+    <p class="grade-help">押すと正解が見える / 押したまま 右へ=正解 左へ=不正解</p>
+  </section>
+
+  <section id="screen-result" hidden>
+    <h1>結果</h1>
+    <div id="result-summary" class="result-summary"></div>
+    <ul id="result-list" class="result-list"></ul>
+    <div class="setup-buttons">
+      <button id="btn-retry-wrong" class="btn accent big">間違いだけもう一度</button>
+      <button id="btn-retry" class="btn primary big">もう一度</button>
+      <button id="btn-result-home" class="btn big">設定に戻る</button>
+    </div>
+  </section>
+
+  <section id="screen-stats" hidden>
+    <h1>成績</h1>
+    <div id="stats-summary" class="card"></div>
+    <div class="card">
+      <h2>級別の正答率</h2>
+      <div id="stats-levels"></div>
+    </div>
+    <div class="setup-buttons">
+      <button id="btn-stats-home" class="btn primary big">設定に戻る</button>
+      <button id="btn-reset-data" class="btn danger">記録をすべて消す</button>
+    </div>
+  </section>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
